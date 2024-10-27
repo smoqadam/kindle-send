@@ -6,6 +6,7 @@ var (
 	TypeUrl        FileType = "url"
 	TypeUrlFile    FileType = "urlfile"
 	TypeFile       FileType = "file"
+	TypeLibgen     FileType = "libgen"
 	TypeRemoteFile FileType = "remoteFile"
 )
 

@@ -11,37 +11,28 @@ import (
 )
 
 func Queue(downloadRequests []types.Request) []types.Request {
-	if len(downloadRequests) == 0 {
-		return nil
-	}
-
-	processedRequests := make([]types.Request, 0, len(downloadRequests))
+	var processedRequests []types.Request
 	for _, req := range downloadRequests {
-		if req.Path == "" {
-			util.Red.Println("Skipping empty path")
-			continue
-		}
-
 		switch req.Type {
 		case types.TypeFile:
 			processedRequests = append(processedRequests, req)
+
 		case types.TypeRemoteFile:
-			conf := config.GetInstance()
-			path, err := util.DownloadFile(req.Path, conf.StorePath)
+			path, err := util.DownloadFile(req.Path, config.GetInstance().StorePath)
 			if err != nil {
-				util.Red.Printf("SKIPPING %s: %v\n", req.Path, err)
-				continue
+				util.Red.Printf("SKIPPING %s: %s\n", req.Path, err)
+			} else {
+				processedRequests = append(processedRequests, types.NewRequest(path, types.TypeFile, nil))
+				util.Green.Printf("Successfully downloaded: %s\n", path)
 			}
-			processedRequests = append(processedRequests, types.NewRequest(path, types.TypeFile, nil))
+
 		case types.TypeUrl:
 			path, err := epubgen.Make([]string{req.Path}, "")
 			if err != nil {
-				util.Red.Printf("SKIPPING %s: %v\n", req.Path, err)
-				continue
+				util.Red.Printf("SKIPPING %s: %s\n", req.Path, err)
+			} else {
+				processedRequests = append(processedRequests, types.NewRequest(path, types.TypeFile, nil))
 			}
-			processedRequests = append(processedRequests, types.NewRequest(path, types.TypeFile, nil))
-		default:
-			util.Red.Printf("Unknown type for %s: %v\n", req.Path, req.Type)
 		}
 	}
 	return processedRequests

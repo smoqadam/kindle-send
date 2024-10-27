@@ -13,6 +13,7 @@ type Server struct {
 func Start(port int) {
 	http.HandleFunc("/send", handleSend())
 	http.HandleFunc("/download", handleDownload())
+	http.HandleFunc("/libgen", handleLibgenSearch())
 
 	address := fmt.Sprintf(":%d", port)
 	util.Green.Printf("Starting server on http://localhost%s\n", address)

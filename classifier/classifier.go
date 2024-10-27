@@ -1,13 +1,40 @@
 package classifier
 
 import (
+	"fmt"
 	"io"
+	"net/url"
 	"os"
 	"path/filepath"
 	"strings"
 
 	"github.com/smoqadam/kindle-send/types"
 )
+
+func isLibgen(u string) bool {
+	if !isUrl(u) {
+		return false
+	}
+	parsedURL, err := url.Parse(u)
+	if err != nil {
+		return false
+	}
+
+	libgenDomains := []string{
+		"https://download.library.lol",
+		// "libgen.is",
+		// "libgen.rs",
+		// "library.lol",
+		// "gen.lib.rus.ec",
+	}
+
+	for _, domain := range libgenDomains {
+		if strings.Contains(parsedURL.Host, domain) {
+			return true
+		}
+	}
+	return false
+}
 
 func isUrl(u string) bool {
 	for _, proto := range []string{"http://", "https://"} {
@@ -42,7 +69,6 @@ func isUrlFile(u string) bool {
 	n, _ := file.Read(buf)
 	content := string(buf[:n])
 	lines := strings.Split(content, "\n")
-
 	for _, line := range lines {
 		line = strings.TrimSpace(line)
 		if line == "" {
@@ -103,6 +129,9 @@ func Classify(args []string) []types.Request {
 			continue
 		}
 
+		// if isLibgen(arg) {
+		// 	requests = append(requests, types.NewRequest(arg, types.TypeLibgen, nil))
+		// } else
 		if isRemoteFile(arg) {
 			requests = append(requests, types.NewRequest(arg, types.TypeRemoteFile, nil))
 		} else if isUrl(arg) {
@@ -113,7 +142,9 @@ func Classify(args []string) []types.Request {
 				if url == "" {
 					continue
 				}
-				if isRemoteFile(url) {
+				if isLibgen(url) {
+					requests = append(requests, types.NewRequest(url, types.TypeLibgen, nil))
+				} else if isRemoteFile(url) {
 					requests = append(requests, types.NewRequest(url, types.TypeRemoteFile, nil))
 				} else if isUrl(url) {
 					requests = append(requests, types.NewRequest(url, types.TypeUrl, nil))
@@ -123,5 +154,6 @@ func Classify(args []string) []types.Request {
 			requests = append(requests, types.NewRequest(arg, types.TypeFile, nil))
 		}
 	}
+	fmt.Println(requests)
 	return requests
 }
