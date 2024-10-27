@@ -76,10 +76,10 @@ func ParseURLs(r *http.Request) ([]string, error) {
 	return validURLs, nil
 }
 
-func DownloadFile(url string) (string, error) {
+func DownloadFile(url string, dest string) (string, error) {
 	// get the filename from the URL, can be improved
 	fileName := path.Base(url)
-	filePath := filepath.Join(".", fileName)
+	filePath := filepath.Join(dest, fileName)
 
 	out, err := os.Create(filePath)
 	if err != nil {

@@ -3,11 +3,11 @@ package handler
 import (
 	"fmt"
 
-	"github.com/nikhil1raghav/kindle-send/config"
-	"github.com/nikhil1raghav/kindle-send/epubgen"
-	"github.com/nikhil1raghav/kindle-send/mail"
-	"github.com/nikhil1raghav/kindle-send/types"
-	"github.com/nikhil1raghav/kindle-send/util"
+	"github.com/smoqadam/kindle-send/config"
+	"github.com/smoqadam/kindle-send/epubgen"
+	"github.com/smoqadam/kindle-send/mail"
+	"github.com/smoqadam/kindle-send/types"
+	"github.com/smoqadam/kindle-send/util"
 )
 
 func Queue(downloadRequests []types.Request) []types.Request {
@@ -26,7 +26,8 @@ func Queue(downloadRequests []types.Request) []types.Request {
 		case types.TypeFile:
 			processedRequests = append(processedRequests, req)
 		case types.TypeRemoteFile:
-			path, err := util.DownloadFile(req.Path)
+			conf := config.GetInstance()
+			path, err := util.DownloadFile(req.Path, conf.StorePath)
 			if err != nil {
 				util.Red.Printf("SKIPPING %s: %v\n", req.Path, err)
 				continue

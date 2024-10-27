@@ -6,7 +6,7 @@ import (
 	"path/filepath"
 	"strings"
 
-	"github.com/nikhil1raghav/kindle-send/types"
+	"github.com/smoqadam/kindle-send/types"
 )
 
 func isUrl(u string) bool {

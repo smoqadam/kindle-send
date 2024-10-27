@@ -58,7 +58,7 @@ brew install nikhil1raghav/tap/kindle-send
 
 #### Download binary
 
-Download the binary for your operating system and architecture from [release page](https://github.com/nikhil1raghav/kindle-send/releases) and add it to your [PATH](https://en.wikipedia.org/wiki/PATH_(variable)).
+Download the binary for your operating system and architecture from [release page](https://github.com/smoqadam/kindle-send/releases) and add it to your [PATH](https://en.wikipedia.org/wiki/PATH_(variable)).
 If there is no binary compatible for your system. Please create an issue.
 
 
@@ -67,7 +67,7 @@ If there is no binary compatible for your system. Please create an issue.
 If you have golang installed, you can also install kindle-send using
 
 ```sh
-go install github.com/nikhil1raghav/kindle-send@latest
+go install github.com/smoqadam/kindle-send@latest
 ```
 
 

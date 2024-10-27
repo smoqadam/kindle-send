@@ -1,4 +1,4 @@
-PACKAGE=github.com/nikhil1raghav/kindle-send
+PACKAGE=github.com/smoqadam/kindle-send
 VERSION=$(shell cat VERSION)
 BUILD_DATE=$(shell date -u +'%Y-%m-%dT%H:%M:%SZ')
 CURRENT_DIR=$(shell pwd)

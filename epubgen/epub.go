@@ -11,8 +11,8 @@ import (
 	"github.com/bmaupin/go-epub"
 	"github.com/go-shiori/go-readability"
 	"github.com/gosimple/slug"
-	"github.com/nikhil1raghav/kindle-send/config"
-	"github.com/nikhil1raghav/kindle-send/util"
+	"github.com/smoqadam/kindle-send/config"
+	"github.com/smoqadam/kindle-send/util"
 )
 
 type epubmaker struct {

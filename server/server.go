@@ -4,7 +4,7 @@ import (
 	"fmt"
 	"net/http"
 
-	"github.com/nikhil1raghav/kindle-send/util"
+	"github.com/smoqadam/kindle-send/util"
 )
 
 type Server struct {

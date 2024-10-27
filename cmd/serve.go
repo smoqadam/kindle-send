@@ -1,9 +1,9 @@
 package cmd
 
 import (
-	"github.com/nikhil1raghav/kindle-send/config"
-	"github.com/nikhil1raghav/kindle-send/server"
-	"github.com/nikhil1raghav/kindle-send/util"
+	"github.com/smoqadam/kindle-send/config"
+	"github.com/smoqadam/kindle-send/server"
+	"github.com/smoqadam/kindle-send/util"
 	"github.com/spf13/cobra"
 )
 
@@ -20,9 +20,8 @@ var serveCmd = &cobra.Command{
 - GET /download?urls=url1,url2 : Downloads content from provided URLs`,
 	Run: func(cmd *cobra.Command, args []string) {
 		port, _ := cmd.Flags().GetInt("port")
-		configPath, _ := cmd.Flags().GetString("config")
 
-		_, err := config.Load(configPath)
+		_, err := config.Load()
 		if err != nil {
 			util.Red.Println("Error loading config:", err)
 			return

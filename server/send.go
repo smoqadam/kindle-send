@@ -6,10 +6,10 @@ import (
 	"net/http"
 	"os"
 
-	"github.com/nikhil1raghav/kindle-send/classifier"
-	"github.com/nikhil1raghav/kindle-send/handler"
-	"github.com/nikhil1raghav/kindle-send/types"
-	"github.com/nikhil1raghav/kindle-send/util"
+	"github.com/smoqadam/kindle-send/classifier"
+	"github.com/smoqadam/kindle-send/handler"
+	"github.com/smoqadam/kindle-send/types"
+	"github.com/smoqadam/kindle-send/util"
 )
 
 func handleSend() http.HandlerFunc {

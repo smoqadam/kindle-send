@@ -1,4 +1,4 @@
-module github.com/nikhil1raghav/kindle-send
+module github.com/smoqadam/kindle-send
 
 go 1.18
 
@@ -8,6 +8,7 @@ require (
 	github.com/fatih/color v1.13.0
 	github.com/go-shiori/go-readability v0.0.0-20220215145315-dd6828d2f09b
 	github.com/gosimple/slug v1.13.1
+	github.com/joho/godotenv v1.5.1
 	github.com/lithammer/dedent v1.1.0
 	github.com/spf13/cobra v1.0.0
 	gopkg.in/mail.v2 v2.3.1

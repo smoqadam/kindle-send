@@ -5,8 +5,8 @@ import (
 	"os"
 	"time"
 
-	config "github.com/nikhil1raghav/kindle-send/config"
-	"github.com/nikhil1raghav/kindle-send/util"
+	config "github.com/smoqadam/kindle-send/config"
+	"github.com/smoqadam/kindle-send/util"
 	gomail "gopkg.in/mail.v2"
 )
 

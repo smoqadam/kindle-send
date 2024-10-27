@@ -4,10 +4,10 @@ import (
 	"os"
 
 	"github.com/lithammer/dedent"
-	"github.com/nikhil1raghav/kindle-send/classifier"
-	"github.com/nikhil1raghav/kindle-send/config"
-	"github.com/nikhil1raghav/kindle-send/handler"
-	"github.com/nikhil1raghav/kindle-send/util"
+	"github.com/smoqadam/kindle-send/classifier"
+	"github.com/smoqadam/kindle-send/config"
+	"github.com/smoqadam/kindle-send/handler"
+	"github.com/smoqadam/kindle-send/util"
 	"github.com/spf13/cobra"
 )
 
@@ -38,8 +38,7 @@ var downloadCmd = &cobra.Command{
 	Long:    helpDownload,
 	Example: exampleDownload,
 	Run: func(cmd *cobra.Command, args []string) {
-		configPath, _ := cmd.Flags().GetString("config")
-		_, err := config.Load(configPath)
+		_, err := config.Load()
 		if err != nil {
 			util.Red.Println(err)
 			return
