@@ -77,12 +77,6 @@ func ParseURLs(r *http.Request) ([]string, error) {
 }
 
 func DownloadFile(url string) (string, error) {
-	// create a temporary directory if it doesn't exist
-	// tmpDir := filepath.Join(os.TempDir(), "kindle-send")
-	// if err := os.MkdirAll(tmpDir, 0755); err != nil {
-	// 	return "", fmt.Errorf("failed to create temp directory: %v", err)
-	// }
-
 	// get the filename from the URL, can be improved
 	fileName := path.Base(url)
 	filePath := filepath.Join(".", fileName)

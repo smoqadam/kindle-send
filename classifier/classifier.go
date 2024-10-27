@@ -18,7 +18,7 @@ func isUrl(u string) bool {
 	return false
 }
 
-func isRemoteBook(u string) bool {
+func isRemoteFile(u string) bool {
 	if !isUrl(u) {
 		return false
 	}
@@ -93,16 +93,27 @@ func processUrlFile(path string) []string {
 }
 
 func Classify(args []string) []types.Request {
-	var requests []types.Request
+	if len(args) == 0 {
+		return nil
+	}
+
+	requests := make([]types.Request, 0, len(args))
 	for _, arg := range args {
-		if isRemoteBook(arg) {
+		if arg == "" {
+			continue
+		}
+
+		if isRemoteFile(arg) {
 			requests = append(requests, types.NewRequest(arg, types.TypeRemoteFile, nil))
 		} else if isUrl(arg) {
 			requests = append(requests, types.NewRequest(arg, types.TypeUrl, nil))
 		} else if isUrlFile(arg) {
 			urls := processUrlFile(arg)
 			for _, url := range urls {
-				if isRemoteBook(url) {
+				if url == "" {
+					continue
+				}
+				if isRemoteFile(url) {
 					requests = append(requests, types.NewRequest(url, types.TypeRemoteFile, nil))
 				} else if isUrl(url) {
 					requests = append(requests, types.NewRequest(url, types.TypeUrl, nil))

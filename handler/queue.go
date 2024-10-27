@@ -1,6 +1,8 @@
 package handler
 
 import (
+	"fmt"
+
 	"github.com/nikhil1raghav/kindle-send/config"
 	"github.com/nikhil1raghav/kindle-send/epubgen"
 	"github.com/nikhil1raghav/kindle-send/mail"
@@ -9,37 +11,61 @@ import (
 )
 
 func Queue(downloadRequests []types.Request) []types.Request {
-	var processedRequests []types.Request
+	if len(downloadRequests) == 0 {
+		return nil
+	}
+
+	processedRequests := make([]types.Request, 0, len(downloadRequests))
 	for _, req := range downloadRequests {
+		if req.Path == "" {
+			util.Red.Println("Skipping empty path")
+			continue
+		}
+
 		switch req.Type {
 		case types.TypeFile:
 			processedRequests = append(processedRequests, req)
 		case types.TypeRemoteFile:
 			path, err := util.DownloadFile(req.Path)
 			if err != nil {
-				util.Red.Printf("SKIPPING %s : %s\n", req.Path, err)
-			} else {
-				processedRequests = append(processedRequests, types.NewRequest(path, types.TypeFile, nil))
+				util.Red.Printf("SKIPPING %s: %v\n", req.Path, err)
+				continue
 			}
+			processedRequests = append(processedRequests, types.NewRequest(path, types.TypeFile, nil))
 		case types.TypeUrl:
 			path, err := epubgen.Make([]string{req.Path}, "")
 			if err != nil {
-				util.Red.Printf("SKIPPING %s : %s\n", req.Path, err)
-			} else {
-				processedRequests = append(processedRequests, types.NewRequest(path, types.TypeFile, nil))
+				util.Red.Printf("SKIPPING %s: %v\n", req.Path, err)
+				continue
 			}
+			processedRequests = append(processedRequests, types.NewRequest(path, types.TypeFile, nil))
+		default:
+			util.Red.Printf("Unknown type for %s: %v\n", req.Path, req.Type)
 		}
 	}
 	return processedRequests
 }
 
-func Mail(mailRequests []types.Request, timeout int) {
-	var filePaths []string
+func Mail(mailRequests []types.Request, timeout int) error {
+	if len(mailRequests) == 0 {
+		return fmt.Errorf("no files to send")
+	}
+
+	filePaths := make([]string, 0, len(mailRequests))
 	for _, req := range mailRequests {
+		if req.Path == "" {
+			continue
+		}
 		filePaths = append(filePaths, req.Path)
 	}
+
+	if len(filePaths) == 0 {
+		return fmt.Errorf("no valid file paths to send")
+	}
+
 	if timeout < 60 {
 		timeout = config.DefaultTimeout
 	}
-	mail.Send(filePaths, timeout)
+
+	return mail.Send(filePaths, timeout)
 }

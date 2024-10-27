@@ -20,29 +20,61 @@ func handleSend() http.HandlerFunc {
 		}
 
 		urls, err := util.ParseURLs(r)
-		fmt.Println(urls)
 		if err != nil {
 			http.Error(w, err.Error(), http.StatusBadRequest)
 			return
 		}
 
-		responses := make([]types.ResponseItem, len(urls))
-		downloadRequests := classifier.Classify(urls)
-		fmt.Println(downloadRequests)
-		downloadedRequests := handler.Queue(downloadRequests)
-		fmt.Println(downloadedRequests)
-		handler.Mail(downloadedRequests, 30)
+		if len(urls) == 0 {
+			http.Error(w, "No valid URLs provided", http.StatusBadRequest)
+			return
+		}
 
-		util.CyanBold.Printf("Downloaded %d files :\n", len(downloadRequests))
+		responses := make([]types.ResponseItem, 0, len(urls))
+		downloadRequests := classifier.Classify(urls)
+
+		if len(downloadRequests) == 0 {
+			http.Error(w, "No valid content found in provided URLs", http.StatusBadRequest)
+			return
+		}
+
+		downloadedRequests := handler.Queue(downloadRequests)
+		if len(downloadedRequests) == 0 {
+			http.Error(w, "Failed to process any of the provided URLs", http.StatusInternalServerError)
+			return
+		}
+
+		err = handler.Mail(downloadedRequests, 30)
+		if err != nil {
+			http.Error(w, fmt.Sprintf("Error sending mail: %v", err), http.StatusInternalServerError)
+			return
+		}
+
+		util.CyanBold.Printf("Downloaded %d files:\n", len(downloadedRequests))
+
 		for idx, req := range downloadedRequests {
-			fileInfo, _ := os.Stat(req.Path)
-			responses[idx] = types.ResponseItem{
+			fileInfo, err := os.Stat(req.Path)
+			if err != nil {
+				responses = append(responses, types.ResponseItem{
+					URL:     req.Path,
+					Success: false,
+					Error:   fmt.Sprintf("Failed to get file info: %v", err),
+				})
+				continue
+			}
+
+			responses = append(responses, types.ResponseItem{
 				URL:     fileInfo.Name(),
 				Success: true,
-			}
+			})
 			util.Cyan.Printf("%d. %s\n", idx+1, fileInfo.Name())
 		}
+
 		w.Header().Set("Content-Type", "application/json")
-		json.NewEncoder(w).Encode(responses)
+		if err := json.NewEncoder(w).Encode(responses); err != nil {
+			util.Red.Printf("Error encoding response: %v\n", err)
+			http.Error(w, "Internal server error", http.StatusInternalServerError)
+			return
+		}
 	}
 }
