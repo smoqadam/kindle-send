@@ -2,6 +2,8 @@ package util
 
 import (
 	"bufio"
+	"fmt"
+	"net/http"
 	"os"
 	"strings"
 
@@ -26,7 +28,7 @@ func Scanline() string {
 	return ""
 }
 
-//Scan input and trim
+// Scan input and trim
 func ScanlineTrim() string {
 	return strings.TrimSpace(Scanline())
 }
@@ -49,4 +51,24 @@ func ExtractLinks(filename string) (links []string) {
 		links = append(links, scanner.Text())
 	}
 	return
+}
+
+func ParseURLs(r *http.Request) ([]string, error) {
+	urls := r.URL.Query()["url[]"]
+	if len(urls) == 0 {
+		return nil, fmt.Errorf("no URLs provided")
+	}
+
+	validURLs := make([]string, 0)
+	for _, url := range urls {
+		if trimmedURL := strings.TrimSpace(url); trimmedURL != "" {
+			validURLs = append(validURLs, trimmedURL)
+		}
+	}
+
+	if len(validURLs) == 0 {
+		return nil, fmt.Errorf("no valid URLs provided")
+	}
+
+	return validURLs, nil
 }

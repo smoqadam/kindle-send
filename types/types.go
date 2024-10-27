@@ -17,3 +17,9 @@ type Request struct {
 func NewRequest(path string, fileType FileType, opts map[string]string) Request {
 	return Request{path, fileType, opts}
 }
+
+type ResponseItem struct {
+	URL     string `json:"url"`
+	Success bool   `json:"success"`
+	Error   string `json:"error,omitempty"`
+}
