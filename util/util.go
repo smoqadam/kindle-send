@@ -3,8 +3,11 @@ package util
 import (
 	"bufio"
 	"fmt"
+	"io"
 	"net/http"
 	"os"
+	"path"
+	"path/filepath"
 	"strings"
 
 	"github.com/fatih/color"
@@ -71,4 +74,39 @@ func ParseURLs(r *http.Request) ([]string, error) {
 	}
 
 	return validURLs, nil
+}
+
+func DownloadFile(url string) (string, error) {
+	// create a temporary directory if it doesn't exist
+	// tmpDir := filepath.Join(os.TempDir(), "kindle-send")
+	// if err := os.MkdirAll(tmpDir, 0755); err != nil {
+	// 	return "", fmt.Errorf("failed to create temp directory: %v", err)
+	// }
+
+	// get the filename from the URL, can be improved
+	fileName := path.Base(url)
+	filePath := filepath.Join(".", fileName)
+
+	out, err := os.Create(filePath)
+	if err != nil {
+		return "", fmt.Errorf("failed to create file: %v", err)
+	}
+	defer out.Close()
+
+	resp, err := http.Get(url)
+	if err != nil {
+		return "", fmt.Errorf("failed to download file: %v", err)
+	}
+	defer resp.Body.Close()
+
+	if resp.StatusCode != http.StatusOK {
+		return "", fmt.Errorf("bad status: %s", resp.Status)
+	}
+
+	_, err = io.Copy(out, resp.Body)
+	if err != nil {
+		return "", fmt.Errorf("failed to save file: %v", err)
+	}
+
+	return filePath, nil
 }

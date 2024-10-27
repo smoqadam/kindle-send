@@ -28,7 +28,9 @@ func handleSend() http.HandlerFunc {
 
 		responses := make([]types.ResponseItem, len(urls))
 		downloadRequests := classifier.Classify(urls)
+		fmt.Println(downloadRequests)
 		downloadedRequests := handler.Queue(downloadRequests)
+		fmt.Println(downloadedRequests)
 		handler.Mail(downloadedRequests, 30)
 
 		util.CyanBold.Printf("Downloaded %d files :\n", len(downloadRequests))

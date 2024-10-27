@@ -3,9 +3,10 @@ package types
 type FileType string
 
 var (
-	TypeUrl     FileType = "url"
-	TypeUrlFile FileType = "urlfile"
-	TypeFile    FileType = "file"
+	TypeUrl        FileType = "url"
+	TypeUrlFile    FileType = "urlfile"
+	TypeFile       FileType = "file"
+	TypeRemoteFile FileType = "remoteFile"
 )
 
 type Request struct {
